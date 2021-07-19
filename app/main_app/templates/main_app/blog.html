@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ author.username }}</title>
+</head>
+<body>
+{% block content %}
+
+<h2>{{ author.username }}'s blog</h2>
+
+{% if author != user %}
+
+{% if author in subscriptions %}
+<a href="{% url 'subscription' user_pk=author.pk %}">Отписаться</a>
+{% else %}
+<a href="{% url 'subscription' user_pk=author.pk %}">Подписаться</a>
+{% endif %}
+
+{% endif %}
+
+
+{% for post in posts %}
+
+    <h3>{{ post.title }}</h3>
+    <p>{{ post.text }}</p>
+    <p>{{ post.author }}</p>
+    <br>
+
+{% endfor %}
+
+
+{% endblock %}
+</body>
+</html>

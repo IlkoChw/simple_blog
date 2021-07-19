@@ -3,6 +3,7 @@ from django.views.generic.edit import CreateView
 from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse_lazy
 from .models import Post, UserProfile, UserPostViewing
+from django.contrib.auth.models import User
 
 
 class FeedView(ListView):
@@ -28,6 +29,35 @@ class FeedView(ListView):
         return context
 
 
+class PostCreateView(CreateView):
+    template_name = 'main_app/create_post.html'
+    model = Post
+    success_url = reverse_lazy('feed')
+    fields = ['title', 'text']
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+
+class BlogView(ListView):
+    model = Post
+    template_name = "main_app/blog.html"
+
+    def get_queryset(self):
+        return User.objects.get(username=self.kwargs['user_name'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        author = self.get_queryset()
+
+        context['author'] = author
+        context['subscriptions'] = UserProfile.objects.get(pk=self.request.user.pk).subscriptions.all()
+        context['posts'] = Post.objects.filter(author=author)
+
+        return context
+
+
 def post_viewed(request, post_pk):
     try:
         post = Post.objects.get(post__pk=post_pk)
@@ -38,12 +68,15 @@ def post_viewed(request, post_pk):
         raise Http404("UserPostViewing does not exist")
 
 
-class PostCreateView(CreateView):
-    template_name = 'main_app/create_post.html'
-    model = Post
-    success_url = reverse_lazy('feed')
-    fields = ['title', 'text']
+def subscription_view(request, user_pk):
+    try:
+        author = User.objects.get(pk=user_pk)
+        current_user_profile = UserProfile.objects.get(user=request.user)
+        if author in current_user_profile.subscriptions.all():
+            current_user_profile.subscriptions.remove(author)
+        else:
+            current_user_profile.subscriptions.add(author)
 
-    def form_valid(self, form):
-        form.instance.author = self.request.user
-        return super().form_valid(form)
+        return HttpResponseRedirect(reverse_lazy('blog', kwargs={'user_name': author.username}))
+    except UserPostViewing.DoesNotExist:
+        raise Http404("Subscription does not exist")
