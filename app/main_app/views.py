@@ -1,4 +1,4 @@
-from django.views.generic import ListView
+from django.views.generic import ListView, DeleteView
 from django.views.generic.edit import CreateView
 from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse_lazy
