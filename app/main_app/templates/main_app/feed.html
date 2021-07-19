@@ -9,11 +9,20 @@
 
 <h2>Feed</h2>
 
-    {% for post in posts %}
+    {% for post, view  in posts %}
+
     <h3>{{ post.title }}</h3>
     <p>{{ post.text }}</p>
-    <p>{{ post.author }} {{ post.created }}</p>
-    {% endfor %}
+    <p>{{ post.author }} {{ i.created }}</p>
+
+    {% if view.viewed%}
+    <p>Просмотрено</p>
+    {% else %}
+    <a href="{%url 'post_viewed' post_pk=post.pk %}">Не просмотрено</a>
+    {% endif %}
+
+{% endfor %}
+
 
 {% endblock %}
 </body>

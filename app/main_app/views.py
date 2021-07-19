@@ -1,5 +1,6 @@
 from django.views.generic import ListView
-from .models import Post, UserProfile
+from django.http import HttpResponseRedirect, Http404
+from .models import Post, UserProfile, UserPostViewing
 
 
 class FeedView(ListView):
@@ -9,7 +10,27 @@ class FeedView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['posts'] = Post.objects.filter(
+        posts = Post.objects.filter(
             author__in=UserProfile.objects.get(user=self.request.user).subscriptions.all())
 
+        for post in posts:
+            UserPostViewing.objects.get_or_create(
+                user=self.request.user,
+                post=post
+            )
+
+        user_post_viewings = UserPostViewing.objects.filter(user=self.request.user)
+
+        context['posts'] = zip(posts, user_post_viewings)
+
         return context
+
+
+def post_viewed(request, post_pk):
+    try:
+        post = Post.objects.get(post__pk=post_pk)
+        user_post_viewings = UserPostViewing.objects.get(user=request.user, post=post)
+        user_post_viewings.post_viewed()
+        return HttpResponseRedirect('/feed/')
+    except UserPostViewing.DoesNotExist:
+        raise Http404("UserPostViewing does not exist")

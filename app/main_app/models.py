@@ -16,3 +16,17 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class UserPostViewing(models.Model):
+    user = models.ForeignKey(User, related_name='user', on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, related_name='post', on_delete=models.CASCADE)
+    viewed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'viewed post {self.post.pk} - {self.user.pk}'
+
+    def post_viewed(self):
+        if not self.viewed:
+            self.viewed = True
+            self.save()
