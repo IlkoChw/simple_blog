@@ -1,0 +1,19 @@
+{% load static %}
+
+
+<form method="post" action="{% url 'post_create' %}">
+    {% csrf_token %}
+
+    {% for field in form %}
+    {{ field.label }}
+    {{ field }}
+    <br>
+    <br>
+    {%  endfor %}
+
+
+    <div>
+        <input type="submit" value="Опубликовать">
+    </div>
+
+</form>
