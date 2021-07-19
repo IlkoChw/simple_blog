@@ -14,7 +14,7 @@ class FeedView(ListView):
         context = super().get_context_data(**kwargs)
 
         posts = Post.objects.filter(
-            author__in=UserProfile.objects.get(user=self.request.user).subscriptions.all())
+            author__in=UserProfile.objects.get(user=self.request.user).subscriptions.all()).order_by('-created')
 
         for post in posts:
             UserPostViewing.objects.get_or_create(
