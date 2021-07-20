@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 def get_target_subscribers(author_pk):
     from .models import UserProfile
     author = UserProfile.objects.get(pk=author_pk)
-    target_subscribers = author.subscriptions.all().distinct()
+    target_subscribers = author.user.subscriptions.all()
 
     for subscriber in target_subscribers:
         yield subscriber
@@ -34,8 +34,7 @@ def new_post_email_sent(post_pk):
     subscribers = get_target_subscribers(post.author.pk)
 
     for subscriber in subscribers:
-        print(subscriber.email)
-        # sent_email_wrapper(subject, message, subscriber)
+        sent_email_wrapper(subject, message, subscriber)
 
 
 
