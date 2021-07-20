@@ -37,9 +37,9 @@ class UserPostViewing(models.Model):
 
 @receiver(post_save, sender=Post)
 def create_email_task(sender, instance, using, **kwargs):
-    from .utils import new_post_email_sent
+    from .tasks import task_new_post_email
     # if not instance.email_task_created:
     # instance.email_task_created = True
     # instance.save()
     print('ok!')
-    new_post_email_sent(instance.pk)
+    task_new_post_email(instance.pk)
