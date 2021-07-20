@@ -89,3 +89,7 @@ def subscription_view(request, user_pk):
         return HttpResponseRedirect(reverse_lazy('blog', kwargs={'user_name': author.username}))
     except UserPostViewing.DoesNotExist:
         raise Http404("Subscription does not exist")
+
+
+def redirect_to_feed(request):
+    return HttpResponseRedirect(reverse_lazy('feed'))
