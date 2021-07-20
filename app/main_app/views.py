@@ -2,7 +2,7 @@ from django.views.generic import ListView
 from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
 from django.http import HttpResponseRedirect, Http404
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from .models import Post, UserProfile, UserPostViewing
 from django.contrib.auth.models import User
 
@@ -42,20 +42,20 @@ class UserListView(ListView):
         return context
 
 
-class PostCreateView(CreateView):
-    template_name = 'main_app/create_post.html'
+class BlogView(CreateView, ListView):
     model = Post
-    success_url = reverse_lazy('feed')
+    template_name = "main_app/blog.html"
+
+    success_url = reverse_lazy('some_link')
     fields = ['title', 'text']
 
     def form_valid(self, form):
+        self.username = self.request.user
         form.instance.author = self.request.user
         return super().form_valid(form)
 
-
-class BlogView(ListView):
-    model = Post
-    template_name = "main_app/blog.html"
+    def get_success_url(self):
+        return reverse('blog', kwargs={'user_name': self.request.user.username})
 
     def get_queryset(self):
         return User.objects.get(username=self.kwargs['user_name'])
@@ -66,7 +66,7 @@ class BlogView(ListView):
 
         context['author'] = author
         context['subscriptions'] = UserProfile.objects.get(pk=self.request.user.pk).subscriptions.all()
-        context['posts'] = Post.objects.filter(author=author)
+        context['posts'] = Post.objects.filter(author=author).order_by('-created')
 
         return context
 

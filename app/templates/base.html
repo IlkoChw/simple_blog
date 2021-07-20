@@ -20,7 +20,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container">
-            <a href="#" class="navbar-brand">Simple blog</a>
+            <a href="{% url 'feed' %}" class="navbar-brand">Simple blog</a>
 
             <ul class="nav navbar-nav flex-row text-right">
                 <button id="navbar-toggler" class="navbar-toggler"
@@ -35,7 +35,7 @@
                         <a class="nav-link" href="{% url 'feed' %}">Feed</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">My blog</a>
+                        <a class="nav-link" href="{% url 'blog' user_name=user.username %}">My blog</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'users' %}">Users</a>

@@ -1,35 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ author.username }}</title>
-</head>
-<body>
+{% extends 'base.html' %}
 {% block content %}
 
-<h2>{{ author.username }}'s blog</h2>
-
-{% if author != user %}
-
-{% if author in subscriptions %}
-<a href="{% url 'subscription' user_pk=author.pk %}">Отписаться</a>
-{% else %}
-<a href="{% url 'subscription' user_pk=author.pk %}">Подписаться</a>
-{% endif %}
-
-{% endif %}
+{% block title %}
+<title>{{ author.username }}'s blog</title>
+{% endblock title %}
 
 
-{% for post in posts %}
+<div class="col-12 mb-5">
 
-    <h3>{{ post.title }}</h3>
-    <p>{{ post.text }}</p>
-    <p>{{ post.author }}</p>
-    <br>
+    <div class="col-12 mb-5">
+        {% if author != user %}
 
-{% endfor %}
+        <h1 class="mb-3">{{ author.username }}'s blog</h1>
+
+        {% if author in subscriptions %}
+        <a href="{% url 'subscription' user_pk=author.pk %}" class="btn btn-info z-depth-0 text-capitalize">Отписаться</a>
+        {% else %}
+        <a href="{% url 'subscription' user_pk=author.pk %}" class="btn btn-success z-depth-0 text-capitalize">Подписаться</a>
+        {% endif %}
+
+        {% else %}
+
+        <h1 class="mb-5">My blog</h1>
+
+        <div class="col-12 mb-5 px-0">
+            <div class="card ">
+                <div class="card-body">
+                    <h4 class="card-title">New post</h4>
+                    <form method="post" action="{%url 'blog' user_name=user.username %}">
+                        {% csrf_token %}
+
+                        <div class="md-form form-sm">
+                            {{ form.title }}
+                            <label class="pl-2" for="InputTitle">Заголовок</label>
+                        </div>
+
+                        <div class="md-form form-sm">
+                            {{ form.text }}
+                            <label class="pl-2" for="InputText">Текст</label>
+                        </div>
+
+                        <br>
+                        <div>
+                            <input type="submit" value="Опубликовать">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
 
-{% endblock %}
-</body>
-</html>
+
+        {% endif %}
+    </div>
+
+    {% for post in posts %}
+
+    <div class="col-12 mb-5">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{{ post.title }}</h4>
+                <p class="h5 text-muted mb-5">{{ post.text }}</p>
+                <p class="card-text">{{ post.created }}</p>
+            </div>
+        </div>
+    </div>
+
+    {% endfor %}
+
+    {% endblock %}
+</div>
