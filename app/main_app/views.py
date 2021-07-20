@@ -5,6 +5,8 @@ from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse_lazy, reverse
 from .models import Post, UserProfile, UserPostViewing
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 
 class FeedView(ListView):
@@ -29,6 +31,10 @@ class FeedView(ListView):
 
         return context
 
+    @method_decorator(login_required(login_url='/admin/'))
+    def dispatch(self, *args, **kwargs):
+        return super(FeedView, self).dispatch(*args, **kwargs)
+
 
 class UserListView(ListView):
     model = User
@@ -40,6 +46,10 @@ class UserListView(ListView):
         context['users'] = User.objects.all()
 
         return context
+
+    @method_decorator(login_required(login_url='/admin/'))
+    def dispatch(self, *args, **kwargs):
+        return super(UserListView, self).dispatch(*args, **kwargs)
 
 
 class BlogView(CreateView):
@@ -54,7 +64,7 @@ class BlogView(CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('personal_blog', kwargs={'user_name': self.request.user.username})
+        return reverse('blog', kwargs={'user_name': self.request.user.username})
 
     def get_queryset(self):
         return User.objects.get(username=self.kwargs['user_name'])
@@ -69,6 +79,10 @@ class BlogView(CreateView):
 
         return context
 
+    @method_decorator(login_required(login_url='/admin/'))
+    def dispatch(self, *args, **kwargs):
+        return super(BlogView, self).dispatch(*args, **kwargs)
+
 
 class PostDetailView(DetailView):
     model = Post
@@ -77,7 +91,12 @@ class PostDetailView(DetailView):
     def get_queryset(self):
         return Post.objects.filter(pk=self.kwargs['pk'])
 
+    @method_decorator(login_required(login_url='/admin/'))
+    def dispatch(self, *args, **kwargs):
+        return super(PostDetailView, self).dispatch(*args, **kwargs)
 
+
+@login_required(login_url='/admin/')
 def post_viewed(request, post_pk):
     try:
         post = Post.objects.get(pk=post_pk)
@@ -88,6 +107,7 @@ def post_viewed(request, post_pk):
         raise Http404("UserPostViewing does not exist")
 
 
+@login_required(login_url='/admin/')
 def subscription_view(request, user_pk):
     try:
         author = User.objects.get(pk=user_pk)
