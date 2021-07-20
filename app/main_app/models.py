@@ -8,7 +8,7 @@ from django.urls import reverse
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    subscriptions = models.ManyToManyField(User, related_name='subscriptions')
+    subscriptions = models.ManyToManyField(User, related_name='subscriptions', blank=True)
 
 
 class Post(models.Model):
