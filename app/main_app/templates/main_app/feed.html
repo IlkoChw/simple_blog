@@ -7,23 +7,25 @@
 
 {% block content %}
 
-
-<h2>Feed</h2>
-
     {% for post, view  in posts %}
+    <div class="col-12 mb-5">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{{ post.title }}</h4>
+                <p class="h5 text-muted mb-5">{{ post.text }}</p>
 
-    <h3>{{ post.title }}</h3>
-    <p>{{ post.text }}</p>
-    <p>Author <a href="{%url 'blog' user_name=post.author.username %}">{{ post.author }}</a></p>
-    <p>{{ post.created }}</p>
-
-    {% if view.viewed%}
-    <p>Viewed</p>
-    {% else %}
-    <a href="{%url 'post_viewed' post_pk=post.pk %}">Not viewed</a>
-    {% endif %}
-    <br>
+                <p class="card-text ">Author: <a class="text-info" href="{%url 'blog' user_name=post.author.username %}">{{ post.author }}</a></p>
+                <p class="card-text">{{ post.created }}</p>
+                {% if view.viewed %}
+                <p class="card-text text-success">Viewed</p>
+                {% else %}
+                <a href="{%url 'post_viewed' post_pk=post.pk %}" class="card-link text-info">Not viewed</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 
 {% endfor %}
+
 
 {% endblock %}
