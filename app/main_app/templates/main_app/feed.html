@@ -1,11 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Feed</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}
+<title>Feed</title>
+{% endblock title %}
+
+
 {% block content %}
+
 
 <h2>Feed</h2>
 
@@ -25,7 +26,4 @@
 
 {% endfor %}
 
-
 {% endblock %}
-</body>
-</html>
