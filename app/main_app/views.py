@@ -1,5 +1,6 @@
-from django.views.generic import ListView, DeleteView
+from django.views.generic import ListView
 from django.views.generic.edit import CreateView
+from django.views.generic.detail import DetailView
 from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse_lazy
 from .models import Post, UserProfile, UserPostViewing
@@ -56,6 +57,14 @@ class BlogView(ListView):
         context['posts'] = Post.objects.filter(author=author)
 
         return context
+
+
+class PostDetailView(DetailView):
+    model = Post
+    template_name = 'main_app/post_detail.html'
+
+    def get_queryset(self):
+        return Post.objects.filter(pk=self.kwargs['pk'])
 
 
 def post_viewed(request, post_pk):
