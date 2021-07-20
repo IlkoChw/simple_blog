@@ -42,7 +42,7 @@ class UserListView(ListView):
         return context
 
 
-class BlogView(CreateView, ListView):
+class BlogView(CreateView):
     model = Post
     template_name = "main_app/blog.html"
 
@@ -50,12 +50,11 @@ class BlogView(CreateView, ListView):
     fields = ['title', 'text']
 
     def form_valid(self, form):
-        self.username = self.request.user
         form.instance.author = self.request.user
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('blog', kwargs={'user_name': self.request.user.username})
+        return reverse('personal_blog', kwargs={'user_name': self.request.user.username})
 
     def get_queryset(self):
         return User.objects.get(username=self.kwargs['user_name'])
