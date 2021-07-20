@@ -29,7 +29,7 @@ def new_post_email_sent(post_pk):
     post = Post.objects.get(pk=post_pk)
 
     subject = f'Новый пост: {post.title}. от {post.author}'
-    message = f'http://127.0.0.1:8000/feed/'
+    message = f'http://127.0.0.1:8000/post/{post.pk}'
 
     subscribers = get_target_subscribers(post.author.pk)
 
