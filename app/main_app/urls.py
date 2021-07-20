@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import FeedView, post_viewed, PostCreateView, BlogView, subscription_view, PostDetailView, redirect_to_feed
+from .views import FeedView, post_viewed, PostCreateView, BlogView, subscription_view, PostDetailView, redirect_to_feed, UserListView
 
 
 urlpatterns = [
@@ -10,4 +10,5 @@ urlpatterns = [
     path('blog/<str:user_name>', BlogView.as_view(), name='blog'),
     path('subscription/<user_pk>', subscription_view, name='subscription'),
     path('post/<pk>', PostDetailView.as_view(), name='post_detail'),
+    path('users/', UserListView.as_view(), name='users'),
 ]

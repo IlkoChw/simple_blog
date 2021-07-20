@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>Users</title>
+{% endblock title %}
+
+
+{% block content %}
+
+    {% for author in users %}
+    {% if author != user %}
+    <div class="col-12 mb-5">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title ml-2">{{ author.username }}</h4>
+                <a href="{%url 'blog' user_name=author.username %}" class="btn btn-info z-depth-0 text-capitalize">View profile</a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+{% endfor %}
+
+
+{% endblock %}
