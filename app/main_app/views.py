@@ -80,7 +80,7 @@ class PostDetailView(DetailView):
 
 def post_viewed(request, post_pk):
     try:
-        post = Post.objects.get(post__pk=post_pk)
+        post = Post.objects.get(pk=post_pk)
         user_post_viewings = UserPostViewing.objects.get(user=request.user, post=post)
         user_post_viewings.post_viewed()
         return HttpResponseRedirect(reverse_lazy('feed'))
